@@ -1,0 +1,98 @@
+package studentmanagementsystem.ui;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
+import studentmanagementsystem.bl.StudentSystemManager;
+
+/**
+ *
+ * @author Simphiwe-2021
+ */
+public class StudentManagementSystemGUI extends JFrame implements ActionListener {
+
+    public JTextField nameField;
+    public JTextField rollNumberField, gradeField;
+    public JButton addButton, removeButton, searchButton, displayButton;
+    public JTextArea displayArea;
+    public Connection connection;
+
+    public StudentManagementSystemGUI() {
+        
+        setTitle("Student Management System");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(null);
+
+        JLabel nameLabel = new JLabel("Name:");
+        nameLabel.setBounds(20, 20, 80, 20);
+        add(nameLabel);
+
+        nameField = new JTextField();
+        nameField.setBounds(100, 20, 150, 20);
+        add(nameField);
+
+        JLabel rollNumberLabel = new JLabel("Roll Number:");
+        rollNumberLabel.setBounds(20, 50, 80, 20);
+        add(rollNumberLabel);
+
+        rollNumberField = new JTextField();
+        rollNumberField.setBounds(100, 50, 150, 20);
+        add(rollNumberField);
+
+        JLabel gradeLabel = new JLabel("Grade:");
+        gradeLabel.setBounds(20, 80, 80, 20);
+        add(gradeLabel);
+
+        gradeField = new JTextField();
+        gradeField.setBounds(100, 80, 150, 20);
+        add(gradeField);
+
+        addButton = new JButton("Add");
+        addButton.setBounds(20, 120, 80, 30);
+        addButton.addActionListener(this);
+        add(addButton);
+
+        removeButton = new JButton("Remove");
+        removeButton.setBounds(110, 120, 100, 30);
+        removeButton.addActionListener(this);
+        add(removeButton);
+
+        searchButton = new JButton("Search");
+        searchButton.setBounds(220, 120, 80, 30);
+        searchButton.addActionListener(this);
+        add(searchButton);
+
+        displayButton = new JButton("Display All");
+        displayButton.setBounds(20, 160, 120, 30);
+        displayButton.addActionListener(this);
+        add(displayButton);
+
+        displayArea = new JTextArea();
+        displayArea.setBounds(20, 200, 350, 50);
+        add(displayArea);
+
+        try {
+            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+            connection = DriverManager.getConnection("jdbc:derby:studentDB;create=true");
+            Statement statement = connection.createStatement();
+            statement.execute("CREATE TABLE IF NOT EXISTS Students (Name VARCHAR(50), RollNumber VARCHAR(20), Grade VARCHAR(10))");
+            statement.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        StudentSystemManager ssm = new StudentSystemManager();
+        if (e.getSource() == addButton) {
+            ssm.addStudent();
+        } else if (e.getSource() == removeButton) {
+            ssm.removeStudent();
+        } else if (e.getSource() == searchButton) {
+            ssm.searchStudent();
+        } else if (e.getSource() == displayButton) {
+            ssm.displayAllStudents();
+        }
+    }
+}
